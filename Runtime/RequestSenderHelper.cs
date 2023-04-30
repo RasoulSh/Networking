@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 namespace Networking
 {
-    public class RequestSenderHelper : MonoBehaviour
+    internal class RequestSenderHelper : MonoBehaviour
     {
         public void Send<TE>(INetworkRequest request, Action<NetworkResponse<TE>> callback) where TE : NetworkEntity
         {

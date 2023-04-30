@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Networking
 {
-    internal class NetworkRequestSender<TE> where TE : NetworkEntity
+    public class NetworkRequestSender<TE> where TE : NetworkEntity
     {
         private readonly INetworkRequest request;
         private static RequestSenderHelper _senderHelper;
