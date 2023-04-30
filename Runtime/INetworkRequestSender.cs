@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Networking
 {
-    public interface INetworkRequestSender<TE> where TE : NetworkEntity
+    public interface INetworkRequestSender
     {
-        void Request(Action<NetworkResponse<TE>> callback);
+        void Request<TE>(NetworkRequest request, Action<NetworkResponse<TE>> callback) where TE : NetworkEntity;
     }
 }

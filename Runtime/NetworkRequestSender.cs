@@ -1,26 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
 using Networking.Entities;
-using UnityEngine.Networking;
 using UnityEngine;
+using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 namespace Networking
 {
-    public class NetworkRequestSender<TE> where TE : NetworkEntity
+    public class NetworkRequestSender : MonoBehaviour, INetworkRequestSender
     {
-        private readonly INetworkRequest request;
-        private static RequestSenderHelper _senderHelper;
-        private static RequestSenderHelper senderHelper => _senderHelper ??=
-            new GameObject("NetworkRequestSender").AddComponent<RequestSenderHelper>();
-
-        public NetworkRequestSender(INetworkRequest request)
+        public void Request<TE>(NetworkRequest request, Action<NetworkResponse<TE>> callback) where TE : NetworkEntity
         {
-            this.request = request;
+            StartCoroutine(SendRoutine(request, callback));
         }
 
-        public void Request(Action<NetworkResponse<TE>> callback)
-        { ;
-            senderHelper.Send(request, callback);
+        private IEnumerator SendRoutine<TE>(NetworkRequest request, Action<NetworkResponse<TE>> callback) where TE : NetworkEntity
+        {
+            using UnityWebRequest webRequest = request.ToWebRequest();
+            webRequest.SendWebRequest();
+            while (!webRequest.isDone)
+                yield return null;
+            callback?.Invoke(NetworkResponse<TE>.FromWebRequest(webRequest));
         }
     }
 }
